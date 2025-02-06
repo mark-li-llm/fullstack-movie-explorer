@@ -86,20 +86,6 @@ https://my-flask-service-403405868604.us-central1.run.app
    - Card-based design
    - Image hover effects
 
-## Deployment to Google Cloud Run
-
-1. **Install Google Cloud CLI**
-
-2. **Set Environment Variables in Google Cloud Run**
-   - Add `TMDB_API_KEY` to Cloud Run service
-
-3. **Deploy the Application**
-   ```bash
-   gcloud run deploy
-   ```
-
-The application uses port 8080 by default for Cloud Run compatibility.
-
 
 ## Error Handling
 
