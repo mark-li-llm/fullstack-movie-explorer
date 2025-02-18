@@ -2,7 +2,9 @@
 
 ## Deployed Application
 
-[https://my-flask-service-403405868604.us-central1.run.app](https://keen-hangar-450103-i8.ue.r.appspot.com)
+https://keen-hangar-450103-i8.ue.r.appspot.com
+
+
 
 ---
 
