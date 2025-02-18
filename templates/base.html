@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Movie Explorer{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Movie Explorer</h1>
+    {% if current_user.is_authenticated %}
+      <p>
+        Logged in as: <strong>{{ current_user.username }}</strong> |
+        <a href="{{ url_for('auth_bp.logout') }}">Logout</a>
+      </p>
+    {% else %}
+      <p>
+        <a href="{{ url_for('auth_bp.login') }}">Login</a> |
+        <a href="{{ url_for('auth_bp.signup') }}">Sign Up</a>
+      </p>
+    {% endif %}
+  </header>
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  {% with messages = get_flashed_messages(category_filter=["error","success","info"]) %}
+    {% if messages %}
+      <ul>
+        {% for msg in messages %}
+          <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+</body>
+</html>
