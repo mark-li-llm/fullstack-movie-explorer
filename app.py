@@ -18,11 +18,11 @@ app.config.from_object(Config)
 
 db.init_app(app)
 login_manager.init_app(app)
-app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(auth_bp, url_prefix="/auth")
 
-login_manager.login_view = 'auth_bp.login'
+login_manager.login_view = "auth_bp.login"
 
-FAVORITE_MOVIE_IDS = [238, 316029, 2501, 550, 680]  
+FAVORITE_MOVIE_IDS = [238, 316029, 2501, 550, 680]
 
 
 # --------------- Routes ---------------
@@ -42,7 +42,9 @@ def index():
     tagline = movie_data.get("tagline", "")
     genres = [g["name"] for g in movie_data.get("genres", [])]
     poster_path = movie_data.get("poster_path")
-    poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
+    poster_url = (
+        f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
+    )
     wiki_url = search_wikipedia(title)
 
     existing_reviews = Review.query.filter_by(movie_id=movie_id).all()
@@ -55,7 +57,7 @@ def index():
         poster_url=poster_url,
         wiki_url=wiki_url,
         movie_id=movie_id,
-        reviews=existing_reviews
+        reviews=existing_reviews,
     )
 
 
@@ -75,7 +77,7 @@ def rate_comment():
         user_id=current_user.id,
         movie_id=int(movie_id),
         rating=int(rating) if rating else None,
-        comment=comment
+        comment=comment,
     )
     db.session.add(new_review)
     db.session.commit()
@@ -99,13 +101,14 @@ def get_movie_data(movie_id: int):
         print("Error fetching TMDB data:", e)
         return None
 
+
 def search_wikipedia(title: str):
     params = {
         "action": "opensearch",
         "search": title,
         "limit": 1,
         "namespace": 0,
-        "format": "json"
+        "format": "json",
     }
     try:
         response = requests.get("https://en.wikipedia.org/w/api.php", params=params)
@@ -118,9 +121,9 @@ def search_wikipedia(title: str):
 
 
 # --------------- Startup ---------------
-if __name__ == '__main__':
+if __name__ == "__main__":
     # When testing locally, create the database tables for the first time
     # with app.app_context():
     #    db.create_all()
     port = int(os.environ.get("PORT", 8080))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host="0.0.0.0", port=port)
