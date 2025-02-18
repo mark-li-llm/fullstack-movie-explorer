@@ -1,0 +1,14 @@
+runtime: python310  
+
+env: standard
+
+entrypoint: gunicorn -b :$PORT app:app
+
+
+beta_settings:
+  cloud_sql_instances: ""
+
+env_variables:
+  DATABASE_URL: ""
+  TMDB_API_KEY: ""
+  SECRET_KEY: ""
