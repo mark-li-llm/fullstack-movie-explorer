@@ -10,15 +10,15 @@ https://keen-hangar-450103-i8.ue.r.appspot.com
 
 ## Requirements
 
-Python 3.7+
-PostgreSQL
-Flask==2.2.2
-requests==2.28.1
-python-dotenv==0.20.0
-Flask-Login==0.6.2
-Flask-SQLAlchemy==2.5.1
-psycopg2-binary==2.9.3
-gunicorn==20.1.0
+- Python 3.7+
+- PostgreSQL
+- Flask==2.2.2
+- requests==2.28.1
+- python-dotenv==0.20.0
+- Flask-Login==0.6.2
+- Flask-SQLAlchemy==2.5.1
+- psycopg2-binary==2.9.3
+- gunicorn==20.1.0
 ---
 
 ## Setup
