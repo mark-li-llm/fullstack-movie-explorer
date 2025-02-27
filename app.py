@@ -9,16 +9,24 @@ from dotenv import load_dotenv
 from models import db, User, Review
 from auth import auth_bp, login_manager, LoginUser
 from config import Config
+from flask import Flask
+from flask_cors import CORS
+
 
 load_dotenv()
 
-# --------------- Flask App Initialization ---------------
+
 app = Flask(__name__)
+
+CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+
+app.register_blueprint(auth_bp, url_prefix="/") 
+# app.register_blueprint(auth_bp, url_prefix="/api")
 app.config.from_object(Config)
 
 db.init_app(app)
 login_manager.init_app(app)
-app.register_blueprint(auth_bp, url_prefix="/auth")
+# app.register_blueprint(auth_bp, url_prefix="/auth")
 
 login_manager.login_view = "auth_bp.login"
 
@@ -120,6 +128,58 @@ def search_wikipedia(title: str):
         return None
 
 
+
+
+
+from flask import jsonify  
+
+@app.route("/api/comments", methods=["GET"])
+@login_required
+def get_comments_api():
+  
+    user_reviews = Review.query.filter_by(user_id=current_user.id).all()
+    result = []
+    for r in user_reviews:
+        result.append({
+            "id": r.id,
+            "movie_id": r.movie_id,
+            "rating": r.rating,
+            "comment": r.comment or ""
+        })
+    return jsonify({"comments": result}), 200
+
+
+@app.route("/api/comments", methods=["POST"])
+@login_required
+def save_comments_api():
+
+    data = request.json
+    if not data:
+        return jsonify({"error": "Invalid JSON"}), 400
+
+    new_comments = data.get("comments", [])
+    old_reviews = Review.query.filter_by(user_id=current_user.id).all()
+    for rev in old_reviews:
+        db.session.delete(rev)
+    db.session.commit()
+
+    for c in new_comments:
+        new_rev = Review(
+            user_id=current_user.id,
+            movie_id=c.get("movie_id", 0),
+            rating=c.get("rating", 0),
+            comment=c.get("comment", "")
+        )
+        db.session.add(new_rev)
+
+    db.session.commit()
+    return jsonify({"message": "Comments updated successfully"}), 200
+
+
+
+
+
+
 # --------------- Startup ---------------
 if __name__ == "__main__":
     # When testing locally, create the database tables for the first time
@@ -127,3 +187,6 @@ if __name__ == "__main__":
     #    db.create_all()
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
+
+# if __name__ == "__main__":
+#     app.run(debug=True)  # 默认监听 localhost:5000

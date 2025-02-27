@@ -8,18 +8,37 @@ from flask_login import (
     current_user,
 )
 from models import db, User
+from flask import jsonify
 
 auth_bp = Blueprint("auth_bp", __name__)
+
+
+@auth_bp.route('/api/login', methods=['POST', 'OPTIONS'])
+def api_login():
+
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    data = request.get_json()
+    username = data.get('username')
+    if not username:
+        return jsonify({'error': 'Missing username'}), 400
+
+    user = User.query.filter_by(username=username).first()
+    if user:
+        login_user(LoginUser(user))
+        return jsonify({'message': 'Login successful!'}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404
+
+
+
 
 login_manager = LoginManager()
 login_manager.login_view = "auth_bp.login"
 
 
 class LoginUser(UserMixin):
-    """
-    A simple wrapper class that holds the User information from the database.
-    Alternatively, you can have the User class in models.py inherit from UserMixin.
-    """
 
     def __init__(self, user):
         self.id = user.id
@@ -84,3 +103,4 @@ def logout():
     logout_user()
     flash("You have been logged out.", "info")
     return redirect(url_for("auth_bp.login"))
+
