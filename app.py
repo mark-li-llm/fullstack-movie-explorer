@@ -37,10 +37,6 @@ FAVORITE_MOVIE_IDS = [238, 316029, 2501, 550, 680]
 @app.route("/")
 @login_required
 def index():
-    """
-    Homepage: Randomly select a movie, display its information, show existing reviews and ratings,
-    and provide a form for submitting new reviews and ratings.
-    """
     movie_id = random.choice(FAVORITE_MOVIE_IDS)
     movie_data = get_movie_data(movie_id)
     if not movie_data:
@@ -68,18 +64,58 @@ def index():
         reviews=existing_reviews,
     )
 
+from flask import jsonify
 
-@app.route("/rate_comment", methods=["POST"])
+@app.route("/api/random_movie", methods=["GET"])
 @login_required
-def rate_comment():
+def get_random_movie_api():
+    movie_id = random.choice(FAVORITE_MOVIE_IDS)
+    movie_data = get_movie_data(movie_id)
+    if not movie_data:
+        return jsonify({"error": "Movie data unavailable. Try again later."}), 500
+
+    title = movie_data.get("title", "Unknown Title")
+    tagline = movie_data.get("tagline", "")
+    genres = [g["name"] for g in movie_data.get("genres", [])]
+    poster_path = movie_data.get("poster_path")
+    poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
+    wiki_url = search_wikipedia(title)
+
+    existing_reviews = Review.query.filter_by(movie_id=movie_id).all()
+    reviews_list = []
+    for r in existing_reviews:
+        reviews_list.append({
+            "id": r.id,
+            "user_id": r.user_id,
+            "movie_id": r.movie_id,
+            "rating": r.rating,
+            "comment": r.comment
+        })
+
+    return jsonify({
+        "title": title,
+        "tagline": tagline,
+        "genres": genres,
+        "poster_url": poster_url,
+        "wiki_url": wiki_url,
+        "movie_id": movie_id,
+        "reviews": reviews_list
+    }), 200
+
+@app.route("/api/rate_comment", methods=["POST"])
+@login_required
+def rate_comment_api():
     """Process user-submitted rating and comment, and save them in the database."""
-    movie_id = request.form.get("movie_id")
-    rating = request.form.get("rating")
-    comment = request.form.get("comment")
+    data = request.json  
+    if not data:
+        return jsonify({"error": "Missing JSON data"}), 400
+
+    movie_id = data.get("movie_id")
+    rating = data.get("rating")
+    comment = data.get("comment")
 
     if not movie_id:
-        flash("Invalid movie ID", "error")
-        return redirect(url_for("index"))
+        return jsonify({"error": "Invalid movie_id"}), 400
 
     new_review = Review(
         user_id=current_user.id,
@@ -89,9 +125,8 @@ def rate_comment():
     )
     db.session.add(new_review)
     db.session.commit()
-    flash("Review/Rating submitted!", "success")
 
-    return redirect(url_for("index"))
+    return jsonify({"message": "Review/Rating submitted!"}), 200
 
 
 def get_movie_data(movie_id: int):
@@ -189,4 +224,4 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=port)
 
 # if __name__ == "__main__":
-#     app.run(debug=True)  # 默认监听 localhost:5000
+#     app.run(debug=True) 

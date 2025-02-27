@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Comments from './pages/Comments';
+import MovieInfo from './pages/MovieInfo';
 
 function App() {
   const [page, setPage] = useState('login');
@@ -16,7 +17,12 @@ function App() {
   } else if (page === 'signup') {
     content = <Signup onNavigate={handleNavigate} />;
   } else {
-    content = <Comments onNavigate={handleNavigate} />;
+    content = (
+      <div>
+        <MovieInfo />
+        <Comments onNavigate={handleNavigate} />
+      </div>
+    );
   }
 
   return (
