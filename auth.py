@@ -13,25 +13,23 @@ from flask import jsonify
 auth_bp = Blueprint("auth_bp", __name__)
 
 
-@auth_bp.route('/api/login', methods=['POST', 'OPTIONS'])
+@auth_bp.route("/api/login", methods=["POST", "OPTIONS"])
 def api_login():
 
-    if request.method == 'OPTIONS':
-        return '', 200
+    if request.method == "OPTIONS":
+        return "", 200
 
     data = request.get_json()
-    username = data.get('username')
+    username = data.get("username")
     if not username:
-        return jsonify({'error': 'Missing username'}), 400
+        return jsonify({"error": "Missing username"}), 400
 
     user = User.query.filter_by(username=username).first()
     if user:
         login_user(LoginUser(user))
-        return jsonify({'message': 'Login successful!'}), 200
+        return jsonify({"message": "Login successful!"}), 200
     else:
-        return jsonify({'error': 'User not found'}), 404
-
-
+        return jsonify({"error": "User not found"}), 404
 
 
 login_manager = LoginManager()
@@ -72,24 +70,25 @@ def login():
             return redirect(url_for("auth_bp.login"))
     return render_template("login.html")
 
-@auth_bp.route('/api/signup', methods=['POST', 'OPTIONS'])
+
+@auth_bp.route("/api/signup", methods=["POST", "OPTIONS"])
 def api_signup():
-    if request.method == 'OPTIONS':
-        return '', 200
+    if request.method == "OPTIONS":
+        return "", 200
 
     data = request.get_json()
-    username = data.get('username')
+    username = data.get("username")
     if not username:
-        return jsonify({'error': 'Missing username'}), 400
+        return jsonify({"error": "Missing username"}), 400
 
     existing_user = User.query.filter_by(username=username).first()
     if existing_user:
-        return jsonify({'error': 'Username already exists'}), 400
+        return jsonify({"error": "Username already exists"}), 400
     new_user = User(username=username)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'Signup successful!'}), 200
+    return jsonify({"message": "Signup successful!"}), 200
 
 
 @auth_bp.route("/signup", methods=["GET", "POST"])
@@ -122,4 +121,3 @@ def logout():
     logout_user()
     flash("You have been logged out.", "info")
     return redirect(url_for("auth_bp.login"))
-

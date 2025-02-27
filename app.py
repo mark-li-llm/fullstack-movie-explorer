@@ -18,9 +18,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
-CORS(app, supports_credentials=True, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(
+    app,
+    supports_credentials=True,
+    resources={r"/api/*": {"origins": "http://localhost:3000"}},
+)
 
-app.register_blueprint(auth_bp, url_prefix="/") 
+app.register_blueprint(auth_bp, url_prefix="/")
 # app.register_blueprint(auth_bp, url_prefix="/api")
 app.config.from_object(Config)
 
@@ -64,7 +68,9 @@ def index():
         reviews=existing_reviews,
     )
 
+
 from flask import jsonify
+
 
 @app.route("/api/random_movie", methods=["GET"])
 @login_required
@@ -78,35 +84,45 @@ def get_random_movie_api():
     tagline = movie_data.get("tagline", "")
     genres = [g["name"] for g in movie_data.get("genres", [])]
     poster_path = movie_data.get("poster_path")
-    poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
+    poster_url = (
+        f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
+    )
     wiki_url = search_wikipedia(title)
 
     existing_reviews = Review.query.filter_by(movie_id=movie_id).all()
     reviews_list = []
     for r in existing_reviews:
-        reviews_list.append({
-            "id": r.id,
-            "user_id": r.user_id,
-            "movie_id": r.movie_id,
-            "rating": r.rating,
-            "comment": r.comment
-        })
+        reviews_list.append(
+            {
+                "id": r.id,
+                "user_id": r.user_id,
+                "movie_id": r.movie_id,
+                "rating": r.rating,
+                "comment": r.comment,
+            }
+        )
 
-    return jsonify({
-        "title": title,
-        "tagline": tagline,
-        "genres": genres,
-        "poster_url": poster_url,
-        "wiki_url": wiki_url,
-        "movie_id": movie_id,
-        "reviews": reviews_list
-    }), 200
+    return (
+        jsonify(
+            {
+                "title": title,
+                "tagline": tagline,
+                "genres": genres,
+                "poster_url": poster_url,
+                "wiki_url": wiki_url,
+                "movie_id": movie_id,
+                "reviews": reviews_list,
+            }
+        ),
+        200,
+    )
+
 
 @app.route("/api/rate_comment", methods=["POST"])
 @login_required
 def rate_comment_api():
     """Process user-submitted rating and comment, and save them in the database."""
-    data = request.json  
+    data = request.json
     if not data:
         return jsonify({"error": "Missing JSON data"}), 400
 
@@ -163,24 +179,24 @@ def search_wikipedia(title: str):
         return None
 
 
+from flask import jsonify
 
-
-
-from flask import jsonify  
 
 @app.route("/api/comments", methods=["GET"])
 @login_required
 def get_comments_api():
-  
+
     user_reviews = Review.query.filter_by(user_id=current_user.id).all()
     result = []
     for r in user_reviews:
-        result.append({
-            "id": r.id,
-            "movie_id": r.movie_id,
-            "rating": r.rating,
-            "comment": r.comment or ""
-        })
+        result.append(
+            {
+                "id": r.id,
+                "movie_id": r.movie_id,
+                "rating": r.rating,
+                "comment": r.comment or "",
+            }
+        )
     return jsonify({"comments": result}), 200
 
 
@@ -203,16 +219,12 @@ def save_comments_api():
             user_id=current_user.id,
             movie_id=c.get("movie_id", 0),
             rating=c.get("rating", 0),
-            comment=c.get("comment", "")
+            comment=c.get("comment", ""),
         )
         db.session.add(new_rev)
 
     db.session.commit()
     return jsonify({"message": "Comments updated successfully"}), 200
-
-
-
-
 
 
 # --------------- Startup ---------------
@@ -224,4 +236,4 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=port)
 
 # if __name__ == "__main__":
-#     app.run(debug=True) 
+#     app.run(debug=True)
