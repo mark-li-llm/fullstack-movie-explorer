@@ -72,6 +72,25 @@ def login():
             return redirect(url_for("auth_bp.login"))
     return render_template("login.html")
 
+@auth_bp.route('/api/signup', methods=['POST', 'OPTIONS'])
+def api_signup():
+    if request.method == 'OPTIONS':
+        return '', 200
+
+    data = request.get_json()
+    username = data.get('username')
+    if not username:
+        return jsonify({'error': 'Missing username'}), 400
+
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        return jsonify({'error': 'Username already exists'}), 400
+    new_user = User(username=username)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message': 'Signup successful!'}), 200
+
 
 @auth_bp.route("/signup", methods=["GET", "POST"])
 def signup():

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-function Login({ onNavigate }) {
+function Login({ onNavigate, onLoginSuccess }) {
   const [username, setUsername] = useState('');
 
   const handleSubmit = async (e) => {
@@ -18,7 +18,7 @@ function Login({ onNavigate }) {
       const data = await response.json();
       if (response.ok) {
         alert(data.message || 'Login success!');
-        onNavigate('comments');
+        onLoginSuccess({ username });
       } else {
         alert(data.error || 'Login failed');
       }
@@ -52,6 +52,7 @@ function Login({ onNavigate }) {
 
 Login.propTypes = {
   onNavigate: PropTypes.func.isRequired,
+  onLoginSuccess: PropTypes.func.isRequired,
 };
 
 export default Login;
