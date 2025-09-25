@@ -1,0 +1,57 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Movie Info{% endblock %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+<p><strong>Tagline:</strong> {{ tagline }}</p>
+<p><strong>Genres:</strong> {{ genres | join(', ') }}</p>
+
+<div class="poster">
+  <img src="{{ poster_url }}" alt="Poster for {{ title }}">
+</div>
+
+{% if wiki_url %}
+  <p>
+    <a href="{{ wiki_url }}" target="_blank">Click here to see Wikipedia page!</a>
+  </p>
+{% else %}
+  <p class="no-wiki">No related Wikipedia link found.</p>
+{% endif %}
+
+<hr>
+
+<h3>Leave a Review</h3>
+<p><strong>Movie ID:</strong> {{ movie_id }}</p>
+<form method="POST" action="{{ url_for('rate_comment') }}">
+  <input type="hidden" name="movie_id" value="{{ movie_id }}">
+
+  <label for="rating">Rating (1-10):</label>
+  <input type="number" name="rating" id="rating" min="1" max="10">
+
+  <label for="comment">Comment:</label>
+  <textarea name="comment" id="comment" rows="3"></textarea>
+
+  <button type="submit">Submit</button>
+</form>
+
+<hr>
+
+<h3>See what other people said!</h3>
+{% if reviews %}
+  {% for review in reviews %}
+    <div class="review-item">
+      <p><strong>User:</strong> {{ review.user.username }}</p>
+      {% if review.rating %}
+        <p><strong>Rating:</strong> {{ review.rating }}/10</p>
+      {% endif %}
+      {% if review.comment %}
+        <p><strong>Comment:</strong> {{ review.comment }}</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p>No reviews yet. Be the first to add one!</p>
+{% endif %}
+{% endblock %}

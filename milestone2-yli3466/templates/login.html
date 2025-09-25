@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Movie Explorer{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="POST" action="{{ url_for('auth_bp.login') }}">
+  <label>Username:
+    <input type="text" name="username" required>
+  </label>
+  <button type="submit">Login</button>
+</form>
+
+<p>
+  Don't have an account?
+  <a href="{{ url_for('auth_bp.signup') }}">Sign Up</a>
+</p>
+
+{% with messages = get_flashed_messages(category_filter=["error","success","info"]) %}
+  {% if messages %}
+    <ul>
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% endblock %}

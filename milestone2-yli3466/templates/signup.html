@@ -1,0 +1,29 @@
+<!-- templates/signup.html -->
+{% extends "base.html" %}
+
+{% block title %}Sign Up - Movie Explorer{% endblock %}
+
+{% block content %}
+<h2>Sign Up</h2>
+<form method="POST" action="{{ url_for('auth_bp.signup') }}">
+  <label>Username:
+    <input type="text" name="username" required>
+  </label>
+  <button type="submit">Sign Up</button>
+</form>
+
+<p>
+  Already have an account?
+  <a href="{{ url_for('auth_bp.login') }}">Login</a>
+</p>
+
+{% with messages = get_flashed_messages(category_filter=["error","success","info"]) %}
+  {% if messages %}
+    <ul>
+      {% for msg in messages %}
+        <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% endblock %}
