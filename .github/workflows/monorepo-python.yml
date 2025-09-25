@@ -3,15 +3,15 @@ name: Monorepo Python Quality
 on:
   push:
     paths:
-      - 'project1-yli3466/**'
-      - 'milestone2-yli3466/**'
-      - 'milestone3-yli3466/**/*.py'
+      - 'milestone1/**'
+      - 'milestone2/**'
+      - 'milestone3/**/*.py'
       - '.github/workflows/monorepo-python.yml'
   pull_request:
     paths:
-      - 'project1-yli3466/**'
-      - 'milestone2-yli3466/**'
-      - 'milestone3-yli3466/**/*.py'
+      - 'milestone1/**'
+      - 'milestone2/**'
+      - 'milestone3/**/*.py'
       - '.github/workflows/monorepo-python.yml'
   schedule:
     - cron: '0 6 * * 1' # Weekly on Monday 06:00 UTC
@@ -42,7 +42,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('project1-yli3466/requirement.txt', 'milestone2-yli3466/requirements.txt', 'milestone3-yli3466/requirements.txt') }}
+          key: pip-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('milestone1/requirement.txt', 'milestone2/requirements.txt', 'milestone3/requirements.txt') }}
           restore-keys: |
             pip-${{ runner.os }}-${{ matrix.python-version }}-
 
@@ -54,36 +54,36 @@ jobs:
       - name: Ruff (lint)
         run: |
           ruff --version
-          ruff check --output-format=github project1-yli3466 milestone2-yli3466 milestone3-yli3466
+          ruff check --output-format=github milestone1 milestone2 milestone3
 
       - name: Black (format check)
         run: |
           black --version
-          black --check project1-yli3466 milestone2-yli3466 milestone3-yli3466
+          black --check milestone1 milestone2 milestone3
 
       - name: MyPy (types, permissive)
         continue-on-error: true
         run: |
           mypy --version
           # Run per subproject to avoid duplicate-module naming conflicts
-          mypy --ignore-missing-imports project1-yli3466 || true
-          mypy --ignore-missing-imports milestone2-yli3466 || true
-          mypy --ignore-missing-imports milestone3-yli3466 || true
+          mypy --ignore-missing-imports milestone1 || true
+          mypy --ignore-missing-imports milestone2 || true
+          mypy --ignore-missing-imports milestone3 || true
 
-      - name: pip-audit (project1)
+      - name: pip-audit (milestone1)
         if: ${{ always() }}
         continue-on-error: true
         run: |
-          if [ -f project1-yli3466/requirement.txt ]; then pip-audit -r project1-yli3466/requirement.txt; else echo "No requirements file"; fi
+          if [ -f milestone1/requirement.txt ]; then pip-audit -r milestone1/requirement.txt; else echo "No requirements file"; fi
 
       - name: pip-audit (milestone2)
         if: ${{ always() }}
         continue-on-error: true
         run: |
-          if [ -f milestone2-yli3466/requirements.txt ]; then pip-audit -r milestone2-yli3466/requirements.txt; else echo "No requirements file"; fi
+          if [ -f milestone2/requirements.txt ]; then pip-audit -r milestone2/requirements.txt; else echo "No requirements file"; fi
 
       - name: pip-audit (milestone3)
         if: ${{ always() }}
         continue-on-error: true
         run: |
-          if [ -f milestone3-yli3466/requirements.txt ]; then pip-audit -r milestone3-yli3466/requirements.txt; else echo "No requirements file"; fi
+          if [ -f milestone3/requirements.txt ]; then pip-audit -r milestone3/requirements.txt; else echo "No requirements file"; fi

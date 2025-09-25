@@ -3,11 +3,11 @@ name: Monorepo React Quality
 on:
   push:
     paths:
-      - 'milestone3-yli3466/client/**'
+      - 'milestone3/client/**'
       - '.github/workflows/monorepo-react.yml'
   pull_request:
     paths:
-      - 'milestone3-yli3466/client/**'
+      - 'milestone3/client/**'
       - '.github/workflows/monorepo-react.yml'
   schedule:
     - cron: '0 7 * * 1' # Weekly on Monday 07:00 UTC
@@ -34,14 +34,14 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: 'npm'
-          cache-dependency-path: milestone3-yli3466/client/package-lock.json
+          cache-dependency-path: milestone3/client/package-lock.json
 
       - name: Install dependencies
-        working-directory: milestone3-yli3466/client
+        working-directory: milestone3/client
         run: npm ci
 
       - name: ESLint
-        working-directory: milestone3-yli3466/client
+        working-directory: milestone3/client
         run: npm run lint
 
       # Tests are optional for now; enable later if desired
@@ -51,6 +51,5 @@ jobs:
       #   continue-on-error: true
 
       - name: Build
-        working-directory: milestone3-yli3466/client
+        working-directory: milestone3/client
         run: npm run build
-
