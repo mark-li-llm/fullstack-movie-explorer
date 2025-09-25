@@ -42,9 +42,7 @@ def index():
     tagline = movie_data.get("tagline", "")
     genres = [g["name"] for g in movie_data.get("genres", [])]
     poster_path = movie_data.get("poster_path")
-    poster_url = (
-        f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
-    )
+    poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else None
     wiki_url = search_wikipedia(title)
 
     existing_reviews = Review.query.filter_by(movie_id=movie_id).all()

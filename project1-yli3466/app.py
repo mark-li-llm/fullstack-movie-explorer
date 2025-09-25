@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 FAVORITE_MOVIE_IDS = [238, 316029, 2501]
 
+
 @app.route("/")
 def index():
     movie_id = random.choice(FAVORITE_MOVIE_IDS)
@@ -29,8 +30,9 @@ def index():
         tagline=tagline,
         genres=genres,
         poster_url=poster_url,
-        wiki_url=wiki_url
+        wiki_url=wiki_url,
     )
+
 
 def get_movie_data(movie_id: int):
     api_key = os.getenv("TMDB_API_KEY")
@@ -47,14 +49,9 @@ def get_movie_data(movie_id: int):
         print("Error fetching TMDB data:", e)
         return None
 
+
 def search_wikipedia(title: str):
-    params = {
-        "action": "opensearch",
-        "search": title,
-        "limit": 1,
-        "namespace": 0,
-        "format": "json"
-    }
+    params = {"action": "opensearch", "search": title, "limit": 1, "namespace": 0, "format": "json"}
     try:
         response = requests.get("https://en.wikipedia.org/w/api.php", params=params)
         response.raise_for_status()
@@ -63,6 +60,7 @@ def search_wikipedia(title: str):
     except Exception as e:
         print("Error fetching Wikipedia data:", e)
         return None
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

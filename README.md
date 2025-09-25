@@ -1,4 +1,8 @@
-# sf0 Monorepo
+# Full-Stack Movie Explorer on GCP: Flask API, React Client, PostgreSQL, CI/CD
+
+[![Python CI](https://github.com/mark-li-llm/fullstack-movie-explorer/actions/workflows/monorepo-python.yml/badge.svg)](https://github.com/mark-li-llm/fullstack-movie-explorer/actions/workflows/monorepo-python.yml)
+[![React CI](https://github.com/mark-li-llm/fullstack-movie-explorer/actions/workflows/monorepo-react.yml/badge.svg)](https://github.com/mark-li-llm/fullstack-movie-explorer/actions/workflows/monorepo-react.yml)
+[![CodeQL](https://github.com/mark-li-llm/fullstack-movie-explorer/actions/workflows/codeql.yml/badge.svg)](https://github.com/mark-li-llm/fullstack-movie-explorer/actions/workflows/codeql.yml)
 
 This repository consolidates three previously separate projects into a single monorepo while preserving full Git history:
 
@@ -16,3 +20,10 @@ Notes:
 - Future updates from the original repos can be pulled via `git subtree pull --prefix=<subdir> <remote> <branch>`.
 - Issues/PRs from the original repositories are not migrated automatically.
 
+CI
+- Automated quality gates via GitHub Actions:
+  - Python: Ruff + Black (check) + MyPy + pip-audit
+  - React: ESLint (Airbnb) + production build
+  - Security: CodeQL (Python & JavaScript)
+- Triggers: push/PR (path filtered), weekly schedule, and manual dispatch.
+- Dependabot keeps pip/npm dependencies up to date with weekly PRs.
