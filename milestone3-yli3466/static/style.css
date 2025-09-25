@@ -1,0 +1,108 @@
+/* static/style.css */
+
+/* Reset + box-sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body & typography */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #8EC5FC 0%, #E0C3FC 100%);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+  }
+  
+  header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  /* Container styling */
+  .container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .container h2 {
+    margin: 0.5rem 0 1rem;
+    font-size: 1.5rem;
+  }
+  
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  
+  .poster {
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+  
+  .poster img {
+    max-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .poster img:hover {
+    transform: scale(1.03);
+  }
+  
+  /* Links */
+  a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .no-wiki {
+    opacity: 0.8;
+    font-style: italic;
+  }
+  
+  /* Reviews */
+  .reviews {
+    margin-top: 1.5rem;
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+  }
+  
+  .review-item {
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #ccc;
+  }
+  
+  /* Form elements */
+  label {
+    display: block;
+    margin: 0.5rem 0 0.2rem;
+  }
+  
+  form input, form textarea {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
